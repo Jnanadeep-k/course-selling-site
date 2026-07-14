@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Details</title>
+    <!-- This links to your existing style sheet for clean typography -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header style="background-color: #1183ca; color: white; padding: 30px; text-align: center;">
+        <h1 id="main-title">Course Details</h1>
+    </header>
+
+    <div style="max-width: 800px; margin: 40px auto; padding: 30px; background: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); font-family: sans-serif;">
+        <h2 id="course-heading">Loading Course Details...</h2>
+        <p id="course-desc" style="font-size: 16px; line-height: 1.6; color: #333; margin-top: 15px;"></p>
+        
+        <div id="syllabus-section" style="margin-top: 25px;">
+            <!-- Dynamic bullet points will generate here automatically -->
+        </div>
+
+        <br><br>
+        <!-- Custom styled button to go back to the home portal layout grid -->
+        <a href="index.html" style="display: inline-block; background-color: #1183ca; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">? Back to Courses</a>
+    </div>
+
+    <script>
+        // Data storage container for all your dynamic portal content blocks
+        const courseData = {
+            java: {
+                title: "Java Web Development",
+                desc: "Master high-performance data processing, big data analysis, and scalable machine learning models using Java. This course bridges the gap between enterprise-grade engineering and advanced data science, teaching you how to handle massive datasets using powerful Java libraries, frameworks, and distributed computing architectures.",
+                syllabus: ["Data Handling: Cleaning and preprocessing large data arrays using Core Java.", "Big Data Tools: Managing massive datasets with Apache Spark and Hadoop.", "Machine Learning: Building predictive models using Weka and Deeplearning4j (DL4J).", "Data Visualization: Creating interactive analytical charts using JFreeChart and JavaFX.", "Optimization: Writing fast, multithreaded algorithms for complex statistical analysis."]
+            },
+            javascript: {
+                title: "Full-Stack JavaScript",
+                desc: "Master the ultimate programming language used to build both stunning front-end user interfaces and lightning-fast back-end server architectures. This project-driven course takes you from JavaScript basics to developing, testing, and deploying production-ready web applications from scratch.",
+                syllabus: ["Advanced JavaScript: Async/Await, ES6+ features, APIs, and DOM manipulation.", "Front-End UI: Building dynamic, reactive user interfaces with React.js.", "Back-End Runtime: Creating secure servers and RESTful APIs using Node.js and Express.", "Database Management: Storing and querying unstructured database systems with MongoDB.", "Deployment: Hosting your full-stack applications live on cloud platforms like Render or Vercel."]
+            },
+            python: {
+                title: "Python for Data Science",
+                desc: "Master the world's most popular language for data analysis, artificial intelligence, and machine learning. This comprehensive course guides you from writing basic Python scripts to cleaning complex datasets, building interactive data civilizations, and deploying your very first predictive machine learning algorithms.",
+                syllabus: ["Python Fundamentals: Basics, data structures (lists, dicts), loops, and functions.", "Data Manipulation: Cleaning and analyzing messy structured data with Pandas and NumPy.", "Data Visualization: Creating beautiful charts, graphs, and plots using Matplotlib and Seaborn.", "Machine Learning: Building predictive models (Regression, Classification) with Scikit-Learn.", "Real-world Projects: Working with live exploratory data analysis (EDA) case studies."]
+            },
+            devops: {
+                title: "DevOps & Cloud Engineering",
+                desc: "Bridge the gap between software development and IT operations by mastering modern cloud automation tools. This course teaches you how to build continuous deployment pipelines, automate server infrastructure, and manage scalable production applications smoothly on cloud platforms like AWS with minimal downtime.",
+                syllabus: ["Linux & Scripting: Mastering command line basics and automation with Bash shell scripts.", "Source Control: Advanced Git workflows, branching strategies, and collaboration methods.", "CI/CD Pipelines: Automating software builds, tests, and deployments using Jenkins and GitHub Actions.", "Containerization: Packaging microservices safely and running isolated applications with Docker.", "Cloud Infrastructure: Provisioning and architecture fundamentals on Amazon Web Services (AWS)."]
+            }
+        };
+
+        // Extract the parameters from the active URL location bar string
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseKey = urlParams.get('course');
+
+        // Swap out titles, heading structures, and generate arrays into bullets
+        if (courseKey && courseData[courseKey]) {
+            const course = courseData[courseKey];
+            document.getElementById('main-title').innerText = course.title;
+            document.getElementById('course-heading').innerText = "About " + course.title;
+            document.getElementById('course-desc').innerText = course.desc;
+
+            let htmlList = "<h3 style='color: #1183ca;'>Course Syllabus & Tech Stack:</h3><ul style='line-height: 2.0; padding-left: 20px;'>";
+            course.syllabus.forEach(item => {
+                htmlList += <li style='margin-bottom: 8px;'>${item}</li>;
+            });
+            htmlList += "</ul>";
+            document.getElementById('syllabus-section').innerHTML = htmlList;
+        } else {
+            document.getElementById('course-heading').innerText = "Course Profile Selection Missing";
+            document.getElementById('course-desc').innerText = "Please return back to your main navigation dashboard portal to select a structural pathway.";
+        }
+    </script>
+</body>
+</html>

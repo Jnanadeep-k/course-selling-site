@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Essential Razorpay Checkout Snippet -->
+    <script src="https://razorpay.com"></script>
+</head>
+<body>
+    <header>
+        <h1>Learn Code Online</h1>
+    </header>
+    <div style="text-align: right; padding: 15px; margin-bottom: 20px;">
+        <a href="admin.html" style="background-color: #007acc; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px;">Go to admin Portal</a>
+    </div>
+    </div><!-- Main Container Layout Grid -->
+    <div class="course-container">
+        <div class="course-card">
+            <!-- Your text content here -->
+            <div class="course-info">
+                <h3>Java Web Development</h3>
+                <p>Master backend servers, APIs, and databases.</p>
+                <span class="price">₹499</span>
+            </div>
+            <!-- New Buttons Container -->
+            <div class="button-group">
+                <a href="java-details.html" class="btn details-btn">Details</a>
+                <button class="btn buy-btn">Buy Course</button>
+            </div>
+        </div>
+        <!-- Course 2 -->
+        <div class="course-card">
+            <h3>Full-Stack JavaScript</h3>
+            <p>Build real-world apps with Node.js and React.</p>
+            <div class="price">₹599</div>
+            <a href="javascript-details.html" class="btn details-btn">Details</a>
+            <button class="buy-btn" onclick="payWithRazorpay('course_2', 59900)">Buy Course</button>
+        </div>
+
+        <div class="course-card">
+            <h3>Python for Data Science</h3>
+            <div class="price">₹699</div>
+            <!-- FIXED: Added the missing > here and used hyphens for the filename -->
+            <a href="python-details.html" class="btn details-btn">Details</a>
+            <button class="buy-btn" onclick="payWithRazorpay('course_3', 69900)">Buy Course</button>
+        </div>
+
+        <!-- Course 4 -->
+        <div class="course-card">
+            <h3>DevOps & Cloud Engineering</h3>
+            <p>Master AWS, Docker containers, and CI/CD pipelines.</p>
+            <div class="price">₹899</div>
+            <!-- ADDED: Added the missing details link for DevOps -->
+            <a href="devops-details.html" class="btn details-btn">Details</a>
+            <button class="buy-btn" onclick="payWithRazorpay('course_4', 89900)">Buy Course</button>
+        </div>
+
+    </div>
+
+    <!-- Script Links Below -->
+    <script src="app.js"></script>
+</body>
+</html>

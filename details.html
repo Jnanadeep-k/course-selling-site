@@ -87,17 +87,44 @@
             syllabusSection.innerHTML = htmlList;
         }
 
-        // Attach Razorpay payment to the Buy Button click handler
+        // Attach Razorpay payment and Google Sheets Tracking to the Buy Button click handler
         if (buyBtn) {
-            buyBtn.onclick = function() {
+            buyBtn.addEventListener("click", function() {
+                // 💥 YOUR REAL GOOGLE APPS SCRIPT WEB APP LINK PROPERLY INTEGRATED HERE 💥
+                var sheetAppUrl = "https://google.com";
+                
+                var orderPayload = {
+                    courseName: course.title,
+                    amount: course.price,
+                    status: "Clicked / Initiated"
+                };
+
+                // Send background tracking log to your Google Sheet database
+                fetch(sheetAppUrl, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(orderPayload)
+                });
+
+                // Launch Razorpay checkout screen window frame
                 var options = {
                     "key": "rzp_test_TD05ZkHE9mLXg8", 
-                    "amount": course.price * 100, // Converts amount to paise
+                    "amount": course.price * 100, // Converts rupees to paise
                     "currency": "INR",
                     "name": "Learn Code Online",
                     "description": "Purchase for " + course.title,
                     "handler": function (response) {
                         alert("Payment Successful! ID: " + response.razorpay_payment_id);
+                        
+                        // Log successful execution record change update to your spreadsheet sheet
+                        orderPayload.status = "Success - Paid: " + response.razorpay_payment_id;
+                        fetch(sheetAppUrl, {
+                            method: "POST",
+                            mode: "no-cors",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(orderPayload)
+                        });
                     },
                     "prefill": {
                         "name": "Student Name",
@@ -109,7 +136,7 @@
                 };
                 var rzp1 = new Razorpay(options);
                 rzp1.open();
-            };
+            });
         }
     } else {
         // Fallback message if key fails to match

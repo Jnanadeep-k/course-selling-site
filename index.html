@@ -12,8 +12,10 @@
         .course-card h3 { color: #1183ca; margin-top: 0; }
         .course-card p { color: #666; font-size: 14px; flex-grow: 1; }
         .price { font-size: 20px; color: #333; margin: 15px 0; font-weight: bold; }
-        .details-btn { display: block; padding: 12px; background-color: #1183ca; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background 0.2s; }
-        .details-btn:hover { background-color: #0f72b0; }
+        .btn-container { display: flex; flex-direction: column; gap: 10px; }
+        .details-btn { display: block; padding: 12px; background-color: #1183ca; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; text-align: center; }
+        .buy-btn { display: block; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 16px; width: 100%; }
+        .buy-btn:hover { background-color: #218838; }
     </style>
 </head>
 <body>
@@ -26,7 +28,10 @@
             <h3>Mastering Java & Spring Boot</h3>
             <p>Learn core Java concepts, object-oriented programming, and robust backend engineering.</p>
             <div class="price">₹799</div>
-            <a href="details.html?course=java" class="details-btn">View Details</a>
+            <div class="btn-container">
+                <a href="details.html?course=java" class="details-btn">View Details</a>
+                <button class="buy-btn" onclick="processCheckout('Mastering Java & Spring Boot', 799)">Buy Course</button>
+            </div>
         </div>
 
         <!-- JavaScript Course -->
@@ -34,7 +39,10 @@
             <h3>Full-Stack JavaScript</h3>
             <p>Master the ultimate programming language used to build modern web applications.</p>
             <div class="price">₹599</div>
-            <a href="details.html?course=javascript" class="details-btn">View Details</a>
+            <div class="btn-container">
+                <a href="details.html?course=javascript" class="details-btn">View Details</a>
+                <button class="buy-btn" onclick="processCheckout('Full-Stack JavaScript', 599)">Buy Course</button>
+            </div>
         </div>
 
         <!-- Python Course -->
@@ -42,7 +50,10 @@
             <h3>Python for Data Science</h3>
             <p>Master the world's most popular language for data analytics and machine learning.</p>
             <div class="price">₹699</div>
-            <a href="details.html?course=python" class="details-btn">View Details</a>
+            <div class="btn-container">
+                <a href="details.html?course=python" class="details-btn">View Details</a>
+                <button class="buy-btn" onclick="processCheckout('Python for Data Science', 699)">Buy Course</button>
+            </div>
         </div>
 
         <!-- DevOps Course -->
@@ -50,9 +61,62 @@
             <h3>DevOps & Cloud Engineering</h3>
             <p>Bridge the gap between software development and IT operations with automation tools.</p>
             <div class="price">₹899</div>
-            <a href="details.html?course=devops" class="details-btn">View Details</a>
+            <div class="btn-container">
+                <a href="details.html?course=devops" class="details-btn">View Details</a>
+                <button class="buy-btn" onclick="processCheckout('DevOps & Cloud Engineering', 899)">Buy Course</button>
+            </div>
         </div>
     </div>
 
+    <!-- Payment SDK and Tracking Scripts -->
+    <script src="https://razorpay.com"></script>
+    <script>
+    function processCheckout(title, price) {
+        // Deployed web app URL mapping tracking endpoint integration
+        var sheetAppUrl = "https://google.com";
+        
+        var orderPayload = {
+            courseName: title,
+            amount: price,
+            status: "Initiated / Clicked From Home"
+        };
+
+        // Write row item background record directly into Google Sheets
+        fetch(sheetAppUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderPayload)
+        });
+
+        // Trigger Razorpay SDK Popup window panel view 
+        var options = {
+            "key": "rzp_test_TD05ZkHE9mLXg8",
+            "amount": price * 100, // Amount in paise
+            "currency": "INR",
+            "name": "Learn Code Online",
+            "description": "Purchase for " + title,
+            "handler": function (response) {
+                alert("Payment Successful! ID: " + response.razorpay_payment_id);
+                
+                orderPayload.status = "Success - Paid ID: " + response.razorpay_payment_id;
+                fetch(sheetAppUrl, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(orderPayload)
+                });
+            },
+            "prefill": {
+                "name": "Student Name",
+                "email": "student@example.com"
+            },
+            "theme": { "color": "#1183ca" }
+        };
+        
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    }
+    </script>
 </body>
 </html>

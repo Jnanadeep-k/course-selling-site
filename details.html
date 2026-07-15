@@ -22,12 +22,10 @@
     <div class="header">Course Details</div>
 
     <div class="container">
-        <!-- These elements must exist for the JavaScript to replace them -->
         <h2 id="course-heading">Loading Course Details...</h2>
         <p id="course-desc"></p>
         <div id="syllabus-section"></div>
 
-        <!-- The payment trigger button -->
         <button id="buyButton" class="btn buy-btn">Buy Course</button>
         <a href="index.html" class="btn back-btn">← Back to Courses</a>
     </div>
@@ -82,8 +80,8 @@
         
         if (syllabusSection) {
             let htmlList = "<h3 style='color: #1183ca; margin-top: 25px;'>Course Syllabus & Modules</h3><ul>";
-            course.syllabus.forEach(item => {
-                htmlList += <li>${item}</li>;
+            course.syllabus.forEach(function(item) {
+                htmlList += "<li>" + item + "</li>";
             });
             htmlList += "</ul>";
             syllabusSection.innerHTML = htmlList;

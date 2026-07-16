@@ -69,54 +69,51 @@
     </div>
 
     <!-- Payment SDK and Tracking Scripts -->
-    <script src="https://razorpay.com"></script>
-    <script>
-    function processCheckout(title, price) {
-        // Deployed web app URL mapping tracking endpoint integration
-        var sheetAppUrl = "https://google.com";
-        
-        var orderPayload = {
-            courseName: title,
-            amount: price,
-            status: "Initiated / Clicked From Home"
-        };
+<script>
+function processCheckout(title, price) {
+    // 1. Replace the URL below with your actual deployed Google Apps Script Web App URL (the one ending in /exec)
+    var sheetAppUrl = "PASTE_YOUR_GOOGLE_WEB_APP_URL_HERE"; 
 
-        // Write row item background record directly into Google Sheets
-        fetch(sheetAppUrl, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(orderPayload)
-        });
+    var options = {
+        "key": "rzp_test_TDO5ZkHE9MLXg8", // Your Test Key ID
+        "amount": price * 100, // Converts rupees to paisa
+        "currency": "INR",
+        "name": "Learn Code Online",
+        "description": "Purchase for " + title,
+        "handler": function (response) {
+            alert("Payment Successful! ID: " + response.razorpay_payment_id);
 
-        // Trigger Razorpay SDK Popup window panel view 
-        var options = {
-            "key": "rzp_test_TD05ZkHE9mLXg8",
-            "amount": price * 100, // Amount in paise
-            "currency": "INR",
-            "name": "Learn Code Online",
-            "description": "Purchase for " + title,
-            "handler": function (response) {
-                alert("Payment Successful! ID: " + response.razorpay_payment_id);
-                
-                orderPayload.status = "Success - Paid ID: " + response.razorpay_payment_id;
-                fetch(sheetAppUrl, {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(orderPayload)
-                });
-            },
-            "prefill": {
-                "name": "Student Name",
-                "email": "student@example.com"
-            },
-            "theme": { "color": "#1183ca" }
-        };
-        
-        var rzp1 = new Razorpay(options);
-        rzp1.open();
-    }
-    </script>
+            // Package data for Google Sheets
+            var orderPayload = {
+                courseName: title,
+                amount: price,
+                status: "Success - ID: " + response.razorpay_payment_id
+            };
+
+            // Send data to Google Sheet Web App
+            fetch(sheetAppUrl, {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(orderPayload)
+            })
+            .then(() => console.log("Data logged to sheet successfully."))
+            .catch(err => console.error("Error logging data:", err));
+        },
+        "prefill": {
+            "name": "Student Name",
+            "email": "student@example.com"
+        },
+        "theme": {
+            "color": "#1183ca"
+        }
+    };
+    
+    var rzp = new Razorpay(options);
+    rzp.open();
+}
+</script>
 </body>
 </html>

@@ -4,195 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Details</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 0; margin: 0; }
-        .header { background-color: #1183ca; color: white; padding: 30px; text-align: center; font-size: 28px; font-weight: bold; }
-        .container { max-width: 700px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .btn { display: inline-block; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 20px; cursor: pointer; font-size: 16px; text-align: center; }
-        .buy-btn { background-color: #1183ca; color: white; border: none; width: 100%; display: block; }
-        .back-btn { background-color: #6c757d; color: white; display: inline-block; }
-        h2 { color: #333; margin-top: 0; }
-        p { color: #555; line-height: 1.6; font-size: 16px; }
-        ul { padding-left: 20px; }
-        li { margin-bottom: 10px; color: #444; font-size: 15px; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="header">Course Details</div>
-
     <div class="container">
-        <h2 id="course-heading">Loading Course Details...</h2>
-        <p id="course-desc"></p>
-        <div id="syllabus-section"></div>
-
-        <button id="buyButton" class="btn buy-btn">Buy Course</button>
-        <a href="index.html" class="btn back-btn">← Back to Courses</a>
+        <h1 id="courseTitle">Loading Course Details...</h1>
+        <p id="courseDescription"></p>
+        <div id="courseSyllabus"></div>
+        <div id="coursePrice" class="price"></div>
+        
+        <!-- Keep your button elements here -->
+        <button id="buyButton" class="buy-btn">Buy Course</button>
+        <a href="courses.html" class="back-btn">← Back to Courses</a>
     </div>
 
-    <!-- Official Razorpay Library Link -->
+    <!-- MAIN DATA LOADING SCRIPT BLOCK -->
+    <script src="app.js"></script>
+    <script>
+        // Global variables to store current course details
+        let currentTitle = "";
+        let currentPrice = 0;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Your original URL parsing and content generation logic goes here
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseId = urlParams.get('course');
+
+            if (courseId && typeof courseData !== 'undefined' && courseData[courseId]) {
+                const course = courseData[courseId];
+                currentTitle = course.title;
+                currentPrice = course.price;
+
+                document.getElementById("courseTitle").innerText = course.title;
+                document.getElementById("courseDescription").innerText = course.description;
+                document.getElementById("coursePrice").innerText = "₹" + course.price;
+                
+                // Tie the buy button click cleanly to the payment trigger
+                document.getElementById("buyButton").onclick = function() {
+                    processCheckout(currentTitle, currentPrice);
+                };
+            } else {
+                document.getElementById("courseTitle").innerText = "Course Not Found";
+            }
+        });
+    </script>
+
+    <!-- RAZORPAY PAYMENT ENGINE SCRIPT BLOCK -->
     <script src="https://razorpay.com"></script>
     <script>
-    // Complete course dataset including pricing
-    const courseData = {
-        javascript: {
-            title: "Full-Stack JavaScript",
-            desc: "Master the ultimate programming language used to build modern web applications from scratch.",
-            price: 599,
-            syllabus: ["Advanced JavaScript: Async/Await & Promises", "ES6+ Modern Features", "REST API Integration & Node.js Basics"]
-        },
-        python: {
-            title: "Python for Data Science",
-            desc: "Master the world's most popular language for data analytics, scripting, and machine learning models.",
-            price: 699,
-            syllabus: ["Python Fundamentals & Syntax", "Data structures (Lists, Dicts, Tuples)", "Pandas, NumPy & Data Visualization"]
-        },
-        devops: {
-            title: "DevOps & Cloud Engineering",
-            desc: "Bridge the gap between software development and IT operations with powerful automation tools.",
-            price: 899,
-            syllabus: ["Linux Systems & Bash Scripting", "Mastering Git & Command Line Basics", "CI/CD Deployment Pipelines"]
-        },
-        java: {
-            title: "Mastering Java & Spring Boot",
-            desc: "Learn core Java concepts, object-oriented programming architectures, and robust backend microservices.",
-            price: 799,
-            syllabus: ["Java Basics & OOPs Deep Dive", "Java Collections Framework", "Building REST APIs with Spring Boot"]
-        }
-    };
+    function processCheckout(title, price) {
+        var sheetAppUrl = "PASTE_YOUR_GOOGLE_WEB_APP_URL_HERE"; 
 
-    // Extract course token from browser URL string
-    const urlParams = new URLSearchParams(window.location.search);
-    const courseKey = urlParams.get('course'); 
+        var options = {
+            "key": "rzp_test_TDO5ZkHE9MLXg8", 
+            "amount": price * 100, 
+            "currency": "INR",
+            "name": "Learn Code Online",
+            "description": "Purchase for " + title,
+            "handler": function (response) {
+                alert("Payment Successful! ID: " + response.razorpay_payment_id);
 
-    // Find layout containers
-    const courseHeading = document.getElementById('course-heading');
-    const courseDesc = document.getElementById('course-desc');
-    const syllabusSection = document.getElementById('syllabus-section');
-    const buyBtn = document.getElementById("buyButton");
-
-    // If a valid matching course key exists, inject the information dynamically
-    if (courseKey && courseData[courseKey]) {
-        const course = courseData[courseKey];
-        
-        if (courseHeading) courseHeading.innerText = "About " + course.title;
-        if (courseDesc) courseDesc.innerText = course.desc;
-        
-        if (syllabusSection) {
-            let htmlList = "<h3 style='color: #1183ca; margin-top: 25px;'>Course Syllabus & Modules</h3><ul>";
-            course.syllabus.forEach(function(item) {
-                htmlList += "<li>" + item + "</li>";
-            });
-            htmlList += "</ul>";
-            syllabusSection.innerHTML = htmlList;
-        }
-
-        // Attach Razorpay payment and Google Sheets Tracking to the Buy Button click handler
-        if (buyBtn) {
-            buyBtn.addEventListener("click", function() {
-                // 💥 YOUR REAL GOOGLE APPS SCRIPT WEB APP LINK PROPERLY INTEGRATED HERE 💥
-                var sheetAppUrl = "https://google.com";
-                
                 var orderPayload = {
-                    courseName: course.title,
-                    amount: course.price,
-                    status: "Clicked / Initiated"
+                    courseName: title,
+                    amount: price,
+                    status: "Success - ID: " + response.razorpay_payment_id
                 };
 
-                // Send background tracking log to your Google Sheet database
                 fetch(sheetAppUrl, {
                     method: "POST",
                     mode: "no-cors",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(orderPayload)
-                });
-
-                // Launch Razorpay checkout screen window frame
-                <script src="https://razorpay.com"></script>
-
-<script>
-function processCheckout(title, price) {
-    var sheetAppUrl = "https://script.google.com/macros/s/AKfycbyO7gfEVCnhj1zHscEQTfEjnCVgeQHcTu0QmxeWal6jhImEfBb3JRre1EeyAiD7-x5z3g/exec"; 
-                var options = {
-                    "key": "rzp_test_TD05ZkHE9mLXg8", 
-                    "amount": course.price * 100, // Converts rupees to paise
-                    "currency": "INR",
-                    "name": "Learn Code Online",
-                    "description": "Purchase for " + course.title,
-                    "handler": function (response) {
-                        alert("Payment Successful! ID: " + response.razorpay_payment_id);
-                        
-                        // Log successful execution record change update to your spreadsheet sheet
-                        orderPayload.status = "Success - Paid: " + response.razorpay_payment_id;
-                        fetch(sheetAppUrl, {
-                            method: "POST",
-                            mode: "no-cors",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(orderPayload)
-                        });
-                    },
-                    "prefill": {
-                        "name": "Student Name",
-                        "email": "student@example.com"
-                    },
-                    "theme": {
-                        "color": "#1183ca"
-                    }
-                };
-                var rzp1 = new Razorpay(options);
-                rzp1.open();
-            });
-        }
-    } else {
-        // Fallback message if key fails to match
-        if (courseHeading) courseHeading.innerText = "Course Profile Selection Missing";
-        if (courseDesc) courseDesc.innerText = "Please navigate back to the main homepage.";
-        if (buyBtn) buyBtn.style.display = 'none';
+                })
+                .then(() => console.log("Data logged successfully."))
+                .catch(err => console.error("Error logging data:", err));
+            },
+            "prefill": {
+                "name": "Student Name",
+                "email": "student@example.com"
+            },
+            "theme": { "color": "#1183ca" }
+        };
+        var rzp = new Razorpay(options);
+        rzp.open();
     }
-        <script src="https://razorpay.com"></script>
-
-<script>
-function processCheckout(title, price) {
-    var sheetAppUrl = "https://script.google.com/macros/s/AKfycbyO7gfEVCnhj1zHscEQTfEjnCVgeQHcTu0QmxeWal6jhImEfBb3JRre1EeyAiD7-x5z3g/exec"; 
-
-    var options = {
-        "key": "rzp_test_TDO5ZkHE9MLXg8", 
-        "amount": price * 100, 
-        "currency": "INR",
-        "name": "Learn Code Online",
-        "description": "Purchase for " + title,
-        "handler": function (response) {
-            alert("Payment Successful! ID: " + response.razorpay_payment_id);
-
-            var orderPayload = {
-                courseName: title,
-                amount: price,
-                status: "Success - ID: " + response.razorpay_payment_id
-            };
-
-            fetch(sheetAppUrl, {
-                method: "POST",
-                mode: "no-cors",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(orderPayload)
-            })
-            .then(() => console.log("Data logged successfully."))
-            .catch(err => console.error("Error logging data:", err));
-        },
-        "prefill": {
-            "name": "Student Name",
-            "email": "student@example.com"
-        },
-        "theme": {
-            "color": "#1183ca"
-        }
-    };
-    
-    var rzp = new Razorpay(options);
-    rzp.open();
-}
     </script>
 </body>
 </html>

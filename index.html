@@ -1,0 +1,122 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Learn Code Online</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-card {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 320px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 24px;
+            color: #1a1a1a;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #555;
+            font-weight: 600;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cccccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        input:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error-box {
+            color: #d9534f;
+            background-color: #fdf7f7;
+            border: 1px solid #d9534f;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <h2>Welcome Back</h2>
+    
+    <!-- Username Input -->
+    <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter your name">
+    </div>
+
+    <!-- Password Input -->
+    <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password">
+    </div>
+
+    <button onclick="validateLogin()">Login</button>
+    
+    <!-- Error Notification -->
+    <div id="errorNotification" class="error-box">Invalid username or password!</div>
+</div>
+
+<script>
+    function validateLogin() {
+        const userField = document.getElementById("username").value.trim();
+        const passField = document.getElementById("password").value;
+
+        // Define your required login credentials here
+        const correctUsername = "student"; 
+        const correctPassword = "password123"; 
+
+        // Check if both fields match your credentials
+        if (userField === correctUsername && passField === correctPassword) {
+            // Redirects to your course list page
+            window.location.href = "courses.html"; 
+        } else {
+            // Displays the error message box
+            document.getElementById("errorNotification").style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>

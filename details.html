@@ -144,6 +144,50 @@
         if (courseDesc) courseDesc.innerText = "Please navigate back to the main homepage.";
         if (buyBtn) buyBtn.style.display = 'none';
     }
+        <script src="https://razorpay.com"></script>
+
+<script>
+function processCheckout(title, price) {
+    var sheetAppUrl = "PASTE_YOUR_GOOGLE_WEB_APP_URL_HERE"; 
+
+    var options = {
+        "key": "rzp_test_TDO5ZkHE9MLXg8", 
+        "amount": price * 100, 
+        "currency": "INR",
+        "name": "Learn Code Online",
+        "description": "Purchase for " + title,
+        "handler": function (response) {
+            alert("Payment Successful! ID: " + response.razorpay_payment_id);
+
+            var orderPayload = {
+                courseName: title,
+                amount: price,
+                status: "Success - ID: " + response.razorpay_payment_id
+            };
+
+            fetch(sheetAppUrl, {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(orderPayload)
+            })
+            .then(() => console.log("Data logged successfully."))
+            .catch(err => console.error("Error logging data:", err));
+        },
+        "prefill": {
+            "name": "Student Name",
+            "email": "student@example.com"
+        },
+        "theme": {
+            "color": "#1183ca"
+        }
+    };
+    
+    var rzp = new Razorpay(options);
+    rzp.open();
+}
     </script>
 </body>
 </html>
